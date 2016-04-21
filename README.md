@@ -8,48 +8,48 @@ From 17.06.2016 to 20.02.2016
 
 **Requirements**
 
-- [ ] #issue01 Write Narrative and Description of System   (Ben )    
-- [ ] #issue02 Discuss and Justify SLC & risk mgt strategy (Seun)    
-- [ ] #issue03 Create initial use case Diagrams            (Remi)   
-- [ ] #issue04Structured use case descriptions
-- [ ] #issue05 Non-functional (Quality attributres) 
-- [ ] #issue06 Screen shots / report formats
+- [x] #issue01 Write Narrative and Description of System   (Ben )    
+- [x] #issue02 Discuss and Justify SLC & risk mgt strategy (Seun)    
+- [x] #issue03 Create initial use case Diagrams            (Remi)   
+- [x] #issue04Structured use case descriptions
+- [x] #issue05 Non-functional (Quality attributres) 
+- [x] #issue06 Screen shots / report formats
 
 **System Architecture Diagram with Interfaces**
 
-- [ ] System Architecture Diagram with Interfaces
+- [x] System Architecture Diagram with Interfaces
 
 **Analysis Sketches**
 
-- [ ] Method used to identify candidate classes
-- [ ] Analysis Class diagram with generalisation,
-- [ ] composition, multiplicity, dialog, control,
-- [ ] entity, interfaces, pre and post conditions, etc.
-- [ ] Interaction diagram
-- [ ] Entity relationship diagram with cardinality
+- [x] Method used to identify candidate classes
+- [x] Analysis Class diagram with generalisation,
+- [x] composition, multiplicity, dialog, control,
+- [x] entity, interfaces, pre and post conditions, etc.
+- [x] Interaction diagram
+- [x] Entity relationship diagram with cardinality
 
 **Code**
 
-- [ ] Compiles and runs
-- [ ] MVC
-- [ ] Design pattern(s)
-- [ ] Concurrency
+- [x] Compiles and runs
+- [x] MVC
+- [x] Design pattern(s)
+- [x] Concurrency
 
 **Design blueprints based on code**
 
-- [ ] Architectural diagram
-- [ ] Design class diagram
-- [ ] State chart
+- [x] Architectural diagram
+- [x] Design class diagram
+- [x] State chart
 
 
 **More UML diagrams**
 
-- [ ] Component and Deployment diagrams - based on
-- [ ] the implementation.
+- [x] Component and Deployment diagrams - based on
+- [x] the implementation.
 
-- [ ] Description of patterns and approach to
-- [ ] concurrency support.
+- [x] Description of patterns and approach to
+- [x] concurrency support.
 
 **Critique**
 
-- [ ] Evaluate the analysis & design artefacts
+- [x] Evaluate the analysis & design artefacts
