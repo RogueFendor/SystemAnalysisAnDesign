@@ -48,7 +48,7 @@ public class EasyVending {
       }
     }
     System.out.println("Update operations");
-                  String [] tab1={"SLOT_CONFIG","PRODUCT_NAME","NewProductName","1"};
+              String [] tab1={"SLOT_CONFIG","PRODUCT_NAME","NewProductName","1"};
               helper.updateTable(tab1);
               String [] tab2={"SLOT_CONFIG","QUANTITY","20","1"};
               helper.updateTable(tab2);

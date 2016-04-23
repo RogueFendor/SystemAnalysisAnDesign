@@ -4,6 +4,7 @@ package EV_DATA_MANAGEMENT;
 import java.util.*;
 import java.sql.*;
 import org.sqlite.SQLiteConfig;
+import static sun.rmi.transport.TransportConstants.Return;
 
 /**
  * 
@@ -13,6 +14,9 @@ public class DatabaseHelper {
     
     private Connection c;
 
+    
+    
+    
     // Statement object its like a sql syntax parser
     private Statement stmt = null;
     private ResultSet rs = null;
@@ -41,9 +45,29 @@ public class DatabaseHelper {
     /**
 
         Method to open database should be called before any CRUD transaction
-
-
+     @return
     */
+    //This is a generic boolean to test CRUDs
+    private boolean status;
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
+    public Connection returnConnection(){
+      return this.c;
+    }
+    public Statement returnStatement(){
+        return  this.stmt;
+    }
+    public ResultSet returnResulSet(){
+        return this.rs;
+    }
+        
     public void dBopen(){
            c = null;
       try {
@@ -138,7 +162,8 @@ public class DatabaseHelper {
       }
       catch ( Exception e ) {
           System.out.println( e.getClass().getName() + "Here?: " + e.getMessage() );
-        }
+         this.setStatus(true);
+      }
        finally{
             try{
               stmt.close();
@@ -146,6 +171,7 @@ public class DatabaseHelper {
             catch( Exception e){
                  System.out.println( e.getClass().getName() + "or Here?: " + e.getMessage() );
                  System.out.println("Error in getIncidents");
+                 
             }
      
         }
@@ -192,8 +218,10 @@ public class DatabaseHelper {
       catch ( SQLException e ) {
           System.out.println( e.getClass().getName() + " here?: " + e.getMessage() );
           System.out.println("Error in InsertTable");
+          this.setStatus(true);
           if(e.getMessage().equals("database is locked")){
             insertTable(n,i);
+            
           }
         }
        finally{
@@ -247,6 +275,7 @@ public class DatabaseHelper {
        catch ( Exception e ) {
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error in InsertTable");
+           this.setStatus(true);
         }
          finally{
             try{
@@ -285,6 +314,7 @@ public class DatabaseHelper {
      catch ( Exception e ) {
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error deleteTable");
+           this.setStatus(true);
         }
          finally{
             try{
@@ -320,6 +350,7 @@ public class DatabaseHelper {
       catch ( Exception e ) {
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error deleteTable");
+           this.setStatus(true);
         }
         finally{
             try{
@@ -353,6 +384,7 @@ public class DatabaseHelper {
       catch ( Exception e ) {
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error in InsetTable");
+           this.setStatus(true);
         }
         finally{
             try{
@@ -395,6 +427,7 @@ public class DatabaseHelper {
        catch ( Exception e ) {
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error in getMachine Config");
+           this.setStatus(true);
         }
         finally{
             try{
@@ -434,6 +467,7 @@ public class DatabaseHelper {
           }
        }
        catch ( Exception e ) {
+           this.setStatus(true);
            System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error in getMachine Config");
         }
@@ -469,6 +503,7 @@ public class DatabaseHelper {
          }
       } 
       catch ( SQLException e ) {
+          this.setStatus(true);
            System.out.println( e.getClass().getName() + ": " + e.getMessage() );
            System.out.println("Error in getPassword");
         }
@@ -498,6 +533,7 @@ public class DatabaseHelper {
         }
       } 
       catch ( SQLException e ) {
+          this.setStatus(true);
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
           System.out.println("Error in getPassword");
           System.exit(0);
@@ -543,6 +579,7 @@ public class DatabaseHelper {
         
       }
       catch ( Exception e ) {
+          this.setStatus(true);
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
           System.out.println("Error in getIncidents");
         }
@@ -571,6 +608,7 @@ public class DatabaseHelper {
         }
       } 
       catch ( SQLException e ) {
+          this.setStatus(true);
           System.out.println( e.getClass().getName() + ": " + e.getMessage() );
           System.out.println("Error in getPassword");
           System.exit(0);
@@ -586,7 +624,7 @@ public class DatabaseHelper {
             } 
         }
         System.out.println("returned password successfully"); 
-        // TODO implement here
+        // TODO implement heres
         return status;
     }
 
