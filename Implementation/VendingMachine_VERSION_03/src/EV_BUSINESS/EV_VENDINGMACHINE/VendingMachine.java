@@ -5,8 +5,6 @@
  */
 package EV_BUSINESS.EV_VENDINGMACHINE;
 
-import EV_BUSINESS.EV_VENDINGMACHINE.Slot;
-import EV_BUSINESS.EV_VENDINGMACHINE.Product;
 import EV_BUSINESS.EV_CONTROL.EVSystem;
 import java.util.ArrayList;
 
@@ -191,21 +189,7 @@ public class VendingMachine extends EVSystem {
 
     @Override
     public void updateConfig(String[] dbUpdate) {
-       
         
-        /*
-        
-      returnVal[0]="SLOT_CONFIG";
-      returnVal[1]=""+this.getSlotID();
-      returnVal[2]=""+this.getProductName();
-      returnVal[3]=""+this.getQuant();
-      returnVal[4]=""+this.getPrice();
-      returnVal[5]=""+this.getTempRange();
-      returnVal[6]="0.0";
-      returnVal[7]=""+this.getCurrencyType();
-        
-        
-        */
        String [] n1 ={"SLOT_CONFIG","PRODUCT_NAME",dbUpdate[2],dbUpdate[1]};
        String [] n2 ={"SLOT_CONFIG","QUANTITY",dbUpdate[3],dbUpdate[1]};
        String [] n3 ={"SLOT_CONFIG","TEMP_RANGE",dbUpdate[5],dbUpdate[1]};

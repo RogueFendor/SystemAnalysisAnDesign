@@ -6,12 +6,14 @@
 package EV_BUSINESS.EV_OBSERVER;
 
 import EV_BUSINESS.EV_CONTROL.EVSystem;
+import EV_BUSINESS.EV_CONTROL.EV_DECORATOR.ErrorReporter;
 import EV_BUSINESS.EV_CONTROL.SystemAdvocate;
 import EV_GUI_ADVOCATE.EsyVendingGUI;
 import java.util.Observable;
 import java.util.Observer;
 import EV_BUSINESS.EV_VENDINGMACHINE.VendingMachine;
-
+import EV_DATA_MANAGEMENT.DatabaseHelper;
+import java.util.*;
 /**
  *
  * @author Anon
@@ -20,6 +22,10 @@ public class EVOserver implements Observer{
    private ObservableVals ov;
    private EsyVendingGUI gui;
    private VendingMachine vm;
+   private DatabaseHelper dbInput;
+   private SystemAdvocate myCashStatus;
+   private ErrorReporter finance;
+   
    
    public EVOserver(ObservableVals ov, EsyVendingGUI gui,VendingMachine vm )
    {
@@ -130,6 +136,26 @@ public class EVOserver implements Observer{
                 gui.simulator.setTextFields(n1[2],n2[2]+"0");
                 ov.reset();
             }
+         }
+         if(ov.isInsertMoney()== true){
+             ov.setInsertMoney(true);
+             if(gui.simulator.index == 30){
+                 Date d = this.gui.simulator.date;
+                 String m =  this.gui.simulator.getMyPrice();
+                 String  [] cash = new String []{};
+                 cash[0] = d.toString();
+                 cash[1] = m;
+                 gui.simulator.setTextFields(cash[0],cash[1]);   
+                 this.dbInput.insertTable(cash, 4);
+                 String moni = String.valueOf(this.myCashStatus.getFinancialStatus());
+                 double pay = Double.parseDouble(moni);
+                 this.myCashStatus.setFinancialStatus(pay);
+                 
+             }
+             else{
+                 ov.setInsertMoney(false);
+                 ov.reset();
+             }
          }
          if(ov.isImballance() ==true){
            SystemAdvocate sa = (SystemAdvocate) gui.systemAdvocate;

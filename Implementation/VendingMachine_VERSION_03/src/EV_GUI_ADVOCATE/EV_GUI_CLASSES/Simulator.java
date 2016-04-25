@@ -6,22 +6,24 @@
 package EV_GUI_ADVOCATE.EV_GUI_CLASSES;
 
 import EV_BUSINESS.EV_OBSERVER.ObservableVals;
-import java.util.ArrayList;
+import EV_BUSINESS.EV_VENDINGMACHINE.Product;
+import java.util.*;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Anon
- */
+
 public class Simulator extends javax.swing.JFrame {
 
     /**
      * Creates new form Simulator
      */
      private ObservableVals systemObserver =null;
-     private double currentPrice; //Double.parseDouble((this.textField2.getText()));
+     private double currentPrice; 
      private ArrayList <Double> n = new ArrayList<>();
+     private Product qty ;
      public int index;
+     public int quantity;
+
+     public Date date;
      public Simulator() {
        initComponents();
        this.cent5.setVisible(false);
@@ -31,6 +33,14 @@ public class Simulator extends javax.swing.JFrame {
        this.euro1.setVisible(false);
        this.euro2.setVisible(false);
        this.euro5.setVisible(false);
+    }
+     
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = qty.getQuantity()-1;
     }
 
     public double getCurrentPrice() {
@@ -57,30 +67,56 @@ public class Simulator extends javax.swing.JFrame {
              this.textField2.setText(n2);
      
      }
+     
+     public void setDate(Date d){
+          d = new Date();
+     }
+     
+     public void setTextMoney(Date date, String price){
+         this.setDate(date);
+         this.textField2.setText(price);
+     }
+     
+     public String getMyPrice(){
+        return this.textField2.getText();
+     }
+     
      private void getSum(){  
-      double amt= Double.parseDouble((this.textField2.getText()));
-      double keep = this.currentPrice;
-      double sum =0.0;
-         sum += getSumCost();
-        sum = (double)Math.round(sum * 100)/100;
-       System.out.println(sum + " " + keep + " inside getSum method");
-            if( amt > sum){
-                    JOptionPane.showMessageDialog(null, " Insufficient Fund, cannot dispense product ");
+        double amt= Double.parseDouble((this.textField2.getText()));
+            double keep = amt;
+            double sum =0.0;
+            if(this.index == 30){
+                sum += getSumCost();
+               this.getQuantity();
             }
-            if(amt  < sum ){
-                    JOptionPane.showMessageDialog(null, " Your change due is " + (sum - amt));
+            else if(this.index == 40){
+                sum += resetPay();
             }
-             if(amt == sum ){
-                 JOptionPane.showMessageDialog(null, "  Please take your product ");
-                 
-             }
-              else{
-                 JOptionPane.showMessageDialog(null, " Please try  make the payment again ");
-             }
-                System.out.println("overall payment " + (sum));
-                System.out.println("amount is " + amt + " you pay " + sum + " Your change due is " + (sum - amt));
-           JOptionPane.showMessageDialog(null, " overall payment " + (sum) + "\n amount is " + amt + " you pay " + sum  +  "\n Your change due is " + (sum - amt) );
-           
+              boolean right = false;
+              sum = (double)Math.round(sum * 100)/100;
+             System.out.println(sum + " " + keep + " inside getSum method");
+             if((this.index ==25 || this.index == 35) && !right){
+                  right = true;
+              }
+             else if(((this.index !=25) || (this.index != 35)) && right){ 
+                    JOptionPane.showMessageDialog(null, " Please select mean of payment ");
+                    right = false;
+              }
+               if(!right){
+                  if( sum > amt){
+                           JOptionPane.showMessageDialog(null, "  Please take your product ");
+                  }
+                  else if(amt  > sum ){
+                      JOptionPane.showMessageDialog(null, " Insufficient cash, cannot dispense product \n Amount is "  + amt + " balance payment is " + (Math.round(sum - amt))*100/100 );
+                  }
+                  else{           
+                      System.out.println("overall payment " + (sum));
+                      System.out.println("Product amount is " + amt + " you pay " + sum + " Your balance due is " + (sum - amt));
+                 JOptionPane.showMessageDialog(null, " Overall payment " + (sum) + "\n Product price is " + amt + " you pay " + sum  +  "\n Your balance due is " + ((sum - amt)*100/100) );
+                 } 
+              }
+               //System.out.print("Money insertion " );
+              System.out.println(" Testing  quantity left. " + this.getQuantity());
     }
      private double getSumCost(){
         double sum= 0; 
@@ -91,6 +127,17 @@ public class Simulator extends javax.swing.JFrame {
      System.out.println(n + "inside getSumCost method");
      return sum;
     }
+     
+     private double resetPay(){;
+         double zero = 0.0;
+          zero= (double)Math.round(zero * 100)/100;
+     for(int j = 0; j < n.size(); j++){
+            n.remove(n.get(j));
+               n.clear();   
+        }
+     System.out.println(n + " inside reset method");
+         return zero;
+     }
      
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -143,6 +190,7 @@ public class Simulator extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputWindow = new javax.swing.JTextArea();
+        cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -168,6 +216,7 @@ public class Simulator extends javax.swing.JFrame {
         });
 
         paymentCash.setText("Cash");
+        paymentCash.setActionCommand("25");
         paymentCash.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 paymentCashActionPerformed(evt);
@@ -175,6 +224,7 @@ public class Simulator extends javax.swing.JFrame {
         });
 
         paymentCard.setText("Card");
+        paymentCard.setActionCommand("35");
         paymentCard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 paymentCardActionPerformed(evt);
@@ -337,6 +387,7 @@ public class Simulator extends javax.swing.JFrame {
         });
 
         dispense.setText("Dispense");
+        dispense.setActionCommand("30");
         dispense.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dispenseActionPerformed(evt);
@@ -344,6 +395,7 @@ public class Simulator extends javax.swing.JFrame {
         });
 
         refund.setText("Refund");
+        refund.setActionCommand("35");
         refund.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refundActionPerformed(evt);
@@ -425,6 +477,14 @@ public class Simulator extends javax.swing.JFrame {
         outputWindow.setRows(5);
         jScrollPane1.setViewportView(outputWindow);
 
+        cancel.setText("Cancel");
+        cancel.setActionCommand("40");
+        cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -494,51 +554,61 @@ public class Simulator extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(weigthImballance, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(shockDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(weigthImballance, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(shockDetector, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(mainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(reorder, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(dispense, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(cancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(paymentCash, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(paymentCard, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(253, 253, 253))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(tempImballance, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(paymentCash, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(dispense, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(refund, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(mainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(reorder, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(104, 104, 104))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(84, 84, 84)
+                                        .addComponent(tempImballance, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(86, 86, 86)
+                                        .addComponent(refund, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(359, 359, 359)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cent5, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cent50)
-                    .addComponent(euro5))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(359, 359, 359)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cent50, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cent5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(euro5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(euro1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cent10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(cent10)
                                 .addGap(18, 18, 18)
                                 .addComponent(cent20))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(euro1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(euro2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(euro2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(paymentCard, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(414, 414, 414)
+                        .addComponent(jLabel4)))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(415, 415, 415))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -571,14 +641,18 @@ public class Simulator extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(weigthImballance)
                             .addComponent(shockDetector))
-                        .addGap(10, 10, 10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tempImballance)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tempImballance)
-                            .addComponent(paymentCash))
-                        .addGap(7, 7, 7)
+                            .addComponent(paymentCash)
+                            .addComponent(paymentCard))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refund)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(dispense)
-                            .addComponent(refund)))
+                            .addComponent(cancel)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -624,9 +698,9 @@ public class Simulator extends javax.swing.JFrame {
                                     .addGap(18, 18, 18)
                                     .addComponent(jButton20)))))
                     .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cent5)
                     .addComponent(cent10)
@@ -636,11 +710,9 @@ public class Simulator extends javax.swing.JFrame {
                     .addComponent(cent50)
                     .addComponent(euro1)
                     .addComponent(euro2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(euro5)
-                    .addComponent(paymentCard))
-                .addGap(56, 56, 56))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(euro5)
+                .addGap(61, 61, 61))
         );
 
         pack();
@@ -687,30 +759,10 @@ public class Simulator extends javax.swing.JFrame {
 
     private void paymentCashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentCashActionPerformed
         // TODO add your handling code here:
-         // TODO add your handling code here:
-        this.cent5.setVisible(true);
-        this.cent10.setVisible(true);
-        this.cent50.setVisible(true);
-        this.cent20.setVisible(true);
-        this.euro1.setVisible(true);
-        this.euro2.setVisible(true);
-        this.euro5.setVisible(true);
-    }//GEN-LAST:event_paymentCashActionPerformed
-
-    private void paymentCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentCardActionPerformed
-        // TODO add your handling code here:
-        String input;
-        String pattern = "[0-16]{0,9}";
-        input =  JOptionPane.showInputDialog(null, " Please enter your card number ");
-        int type = Integer.parseInt(input);
-       if(( type < 16 && type > 16) ){
-           JOptionPane.showMessageDialog(null, " Invalid card number  ");
-       }
-       if(((type == 0) && !input.matches(pattern))){
-           JOptionPane.showMessageDialog(null, " Incorrect card input ");
-       }
-       else{
-            JOptionPane.showMessageDialog(null, " Valid card. Payment will be authorised  ");
+        if((this.textField1.getText().equals("textField1")) && (this.textField2.getText().equals("textField2")) ){
+            JOptionPane.showMessageDialog(null, " You have not selected a product ");
+        }
+        else{
             this.cent5.setVisible(true);
             this.cent10.setVisible(true);
             this.cent50.setVisible(true);
@@ -718,11 +770,70 @@ public class Simulator extends javax.swing.JFrame {
             this.euro1.setVisible(true);
             this.euro2.setVisible(true);
             this.euro5.setVisible(true);
-       }
+        }
+    }//GEN-LAST:event_paymentCashActionPerformed
+
+    private void paymentCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentCardActionPerformed
+           String input = "";
+            input =  JOptionPane.showInputDialog(null, " Please enter your card number ");
+        if((this.textField1.getText().equals("textField1")) && (this.textField2.getText().equals("textField2")) ){
+            JOptionPane.showMessageDialog(null, " You have not selected a product ");
+        }
+        else{
+             validateCreditCardNumber(input);
+        }
     }//GEN-LAST:event_paymentCardActionPerformed
 
+      private void validateCreditCardNumber(String value) {    
+         int sum=0;
+        int[] cardNum = new int[value.length()];
+        for(int i = 0; i < value.length(); i++){
+            cardNum[i] = Integer.parseInt(value.substring(i, i+1));
+        }
+        for(int i = cardNum.length-2; i >=0; i=i-2){
+            int j = cardNum[i];
+            j = j*2;
+            if(j>9){
+                j = j%10 + 1;
+            }
+            cardNum[i]=j;
+        }
+        for(int i = 0;i < cardNum.length; i++){
+            sum+=cardNum[i];
+        }
+        if(sum == 0 || value.equals("") || value.contains("[aA-zZ]{1}")){
+            JOptionPane.showMessageDialog(null, " Empty or wrong format card number not allowed ");
+        }
+        else if(sum%10 == 0){
+           JOptionPane.showMessageDialog(null, " Valid card. Payment will be authorised  ");
+            this.cent5.setVisible(true);
+            this.cent10.setVisible(true);
+            this.cent50.setVisible(true);
+            this.cent20.setVisible(true);
+            this.euro1.setVisible(true);
+            this.euro2.setVisible(true);
+            this.euro5.setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, " Invalid card number  ");
+        }
+    }
+    
     private void refundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refundActionPerformed
-        // TODO add your handling code here:
+        if((this.textField1.getText().equals("textField1")) && (this.textField2.getText().equals("textField2")) ){
+            JOptionPane.showMessageDialog(null, " No refunding issue discovered ");
+        }
+        else if((this.index == 30) ||(this.index == 25)){
+            JOptionPane.showMessageDialog(null, " Product not dispensed, you have been refunded \n€" + (Math.round(this.getSumCost() - (Double.parseDouble(this.textField2.getText())))*100/100) + ". cents");
+         }
+        else if(this.index == 35){
+            
+            JOptionPane.showMessageDialog(null, " Your card will now be refunded ");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, " No refunding issues found ");
+        }
+         
     }//GEN-LAST:event_refundActionPerformed
 
     private void reorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reorderActionPerformed
@@ -740,152 +851,370 @@ public class Simulator extends javax.swing.JFrame {
     }//GEN-LAST:event_machineSetupActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-          this.index = 0;
-        this.systemObserver.setGetSlotConfig(true);
+             this.index = 0;
+             this.systemObserver.setGetSlotConfig(true);
+         if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+         chosenProduct();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
           this.index = 1;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
           this.index = 2;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
           this.index = 3;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
           this.index = 4;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
           this.index = 5;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
           this.index = 6;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
           this.index = 7;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
           this.index = 8;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
           this.index = 9;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
          this.index = 10;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:
          this.index = 11;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
          this.index = 12;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
          this.index = 13;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
          this.index = 14;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
          this.index = 15;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         // TODO add your handling code here:
          this.index = 16;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         // TODO add your handling code here:
          this.index = 17;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         // TODO add your handling code here:
          this.index = 18;
          this.systemObserver.setGetSlotConfig(true);
-         
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+         chosenProduct();
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
         // TODO add your handling code here:
          this.index = 19;
          this.systemObserver.setGetSlotConfig(true);
+           if((this.textField1.getText().equals("Empty")) && (this.textField2.getText().equals("Empty")) ){
+            this.dispense.setEnabled(false);
+            this.paymentCard.setEnabled(false);
+            this.paymentCash.setEnabled(false);
+        }
+         else{
+             this.dispense.setEnabled(true);
+            this.paymentCard.setEnabled(true);
+            this.paymentCash.setEnabled(true);
+         }
+           chosenProduct();
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void cent5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cent5ActionPerformed
         // TODO add your handling code here:
          this.setCurrentPrice((this.currentPrice - 0.05));
-         System.out.println("5 cents read,  Price remain " + this.getCurrentPrice() + " you pay " + (Double.parseDouble(this.cent5.getText().substring(0,1))/100));
+         System.out.println("5 cents read,  Price remain " + this.getCurrentPrice() + " you pay " + (Double.parseDouble(this.cent5.getText().substring(0,2))/100));
           n.add((Double.parseDouble(this.cent5.getText().substring(0,2))/100));
     }//GEN-LAST:event_cent5ActionPerformed
 
     private void cent10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cent10ActionPerformed
         // TODO add your handling code here:
-        this.setCurrentPrice((this.currentPrice - 0.1));
-         System.out.println("10 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent10.getText().substring(0,1))/100));
+        this.setCurrentPrice((this.currentPrice - 0.10));
+         System.out.println("10 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent10.getText().substring(0,2))/100));
           n.add((Double.parseDouble(this.cent10.getText().substring(0,2))/100));
          
     }//GEN-LAST:event_cent10ActionPerformed
 
     private void cent20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cent20ActionPerformed
         // TODO add your handling code here:
-         this.setCurrentPrice((this.currentPrice - 0.2));
-         System.out.println("20 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent20.getText().substring(0,1))/100));
+         this.setCurrentPrice((this.currentPrice - 0.20));
+         System.out.println("20 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent20.getText().substring(0,2))/10));
         n.add((Double.parseDouble(this.cent20.getText().substring(0,2))/100));
     }//GEN-LAST:event_cent20ActionPerformed
 
     private void cent50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cent50ActionPerformed
         // TODO add your handling code here:
-          this.setCurrentPrice((this.currentPrice - 0.5));
-        System.out.println("50 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent50.getText().substring(0,1))/100));
+          this.setCurrentPrice((this.currentPrice - 0.50));
+        System.out.println("50 cents read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.cent50.getText().substring(0,1))/10));
         n.add((Double.parseDouble(this.cent50.getText().substring(0,2))/100));
        
     }//GEN-LAST:event_cent50ActionPerformed
@@ -893,7 +1222,7 @@ public class Simulator extends javax.swing.JFrame {
     private void euro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_euro1ActionPerformed
         // TODO add your handling code here:
         this.setCurrentPrice((this.currentPrice - 1.0));
-         System.out.println("I euro read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.euro1.getText().substring(0,1))/100));
+         System.out.println("1 euro read,  Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.euro1.getText().substring(0,1))));
           n.add((Double.parseDouble(this.euro1.getText().substring(0,1))));
        
     }//GEN-LAST:event_euro1ActionPerformed
@@ -901,7 +1230,7 @@ public class Simulator extends javax.swing.JFrame {
     private void euro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_euro2ActionPerformed
         // TODO add your handling code here:
          this.setCurrentPrice((this.currentPrice - 2.0));
-        System.out.println("2 euro read,  Price remain " + this.getCurrentPrice() + " you pay " + (Double.parseDouble(this.euro2.getText().substring(0,1))/100));
+        System.out.println("2 euro read,  Price remain " + this.getCurrentPrice() + " you pay " + (Double.parseDouble(this.euro2.getText().substring(0,1))));
         n.add((Double.parseDouble(this.euro2.getText().substring(0,1))));
        
     }//GEN-LAST:event_euro2ActionPerformed
@@ -909,17 +1238,505 @@ public class Simulator extends javax.swing.JFrame {
     private void euro5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_euro5ActionPerformed
         // TODO add your handling code here:
         this.setCurrentPrice((this.currentPrice - 5.0));
-        System.out.println("5 euro  read, Price remain " + this.getCurrentPrice()  + " you pay " + (Double.parseDouble(this.euro5.getText().substring(0,1))/100));
+        System.out.println("5 euro  read, Price remain " + (this.getCurrentPrice() ) + " you pay " + (Double.parseDouble(this.euro5.getText().substring(0,1))));
         n.add((Double.parseDouble(this.euro5.getText().substring(0,1))));
         
     }//GEN-LAST:event_euro5ActionPerformed
 
     private void dispenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dispenseActionPerformed
-        // TODO add your handling code here:
-        this.getSum();
+        this.index = 30;
+//        boolean right = true;
+        if((this.textField1.getText().equals("textField1")) && (this.textField2.getText().equals("textField2")) ){
+            JOptionPane.showMessageDialog(null, " Please select a product from Button ");
+        }
+//        if(this.index !=25 || this.index != 35){
+//            right = false;
+//            JOptionPane.showMessageDialog(null, " Please select mean of payment ");
+//        }
+//        else if(this.index == 25 || this.index == 35){
+//             right = true;
+//        }
+//        if(right)
+        else{
+            this.getSum();
+        }
     }//GEN-LAST:event_dispenseActionPerformed
 
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
+        // TODO add your handling code here:
+        resetPay();
+        this.textField1.setText("textField1");
+        this.textField2.setText("textField2");
+                   this.jButton1.setEnabled(true);
+                   this.jButton2.setEnabled(true);
+                   this.jButton3.setEnabled(true);
+                   this.jButton4.setEnabled(true);
+                   this.jButton5.setEnabled(true);
+                   this.jButton6.setEnabled(true);
+                   this.jButton7.setEnabled(true);
+                   this.jButton8.setEnabled(true);
+                   this.jButton9.setEnabled(true);
+                   this.jButton10.setEnabled(true);
+                   this.jButton11.setEnabled(true);
+                   this.jButton12.setEnabled(true);
+                   this.jButton13.setEnabled(true);
+                   this.jButton14.setEnabled(true);
+                   this.jButton15.setEnabled(true);
+                   this.jButton16.setEnabled(true);
+                   this.jButton17.setEnabled(true);
+                   this.jButton18.setEnabled(true);
+                   this.jButton19.setEnabled(true);
+                   this.jButton20.setEnabled(true);
+    }//GEN-LAST:event_cancelActionPerformed
+
+    private void chosenProduct(){
+        
+        switch(this.index){
+            case 0:
+                   this.jButton1.setEnabled(true);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 1:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(true);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 2:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(true);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 3:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(true);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 4:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(true);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 5:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(true);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 6:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(true);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 7:
+                   this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(true);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 8:
+                   this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(true);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 9:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(true);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 10:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(true);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 11:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(true);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 12:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(true);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 13:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(true);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 14:
+                   this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(true);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 15:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(true);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 16:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(true);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 17:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(true);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 18:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(true);
+                   this.jButton20.setEnabled(false);
+                break;
+            case 19:
+                  this.jButton1.setEnabled(false);
+                   this.jButton2.setEnabled(false);
+                   this.jButton3.setEnabled(false);
+                   this.jButton4.setEnabled(false);
+                   this.jButton5.setEnabled(false);
+                   this.jButton6.setEnabled(false);
+                   this.jButton7.setEnabled(false);
+                   this.jButton8.setEnabled(false);
+                   this.jButton9.setEnabled(false);
+                   this.jButton10.setEnabled(false);
+                   this.jButton11.setEnabled(false);
+                   this.jButton12.setEnabled(false);
+                   this.jButton13.setEnabled(false);
+                   this.jButton14.setEnabled(false);
+                   this.jButton15.setEnabled(false);
+                   this.jButton16.setEnabled(false);
+                   this.jButton17.setEnabled(false);
+                   this.jButton18.setEnabled(false);
+                   this.jButton19.setEnabled(false);
+                   this.jButton20.setEnabled(true);
+                break;
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancel;
     private javax.swing.JButton cent10;
     private javax.swing.JToggleButton cent20;
     private javax.swing.JButton cent5;

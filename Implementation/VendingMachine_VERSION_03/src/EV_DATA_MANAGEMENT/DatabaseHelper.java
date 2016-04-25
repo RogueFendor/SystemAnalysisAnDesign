@@ -267,6 +267,9 @@ public class DatabaseHelper {
          else if(n[0].equals("TECHNICIAN")){
              sql = "UPDATE "+n[0]+" set "+n[1]+" = '"+n[2]+"' where ID="+n[3]+";";
          }
+         else if(n[0].equals("ACCOUNT")){
+             sql =  "UPDATE "+n[1]+" set "+ n[1]+ "' where CURR_DATE ="+n[0]+";";
+         }
         System.out.println(sql);
         
          stmt.executeUpdate(sql);

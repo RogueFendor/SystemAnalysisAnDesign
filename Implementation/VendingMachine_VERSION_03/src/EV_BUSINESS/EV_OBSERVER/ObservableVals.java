@@ -26,6 +26,17 @@ public class ObservableVals extends Observable {
     private boolean getSlotConfig=false;
     private boolean imballance =false;
     private boolean re_set =false;
+    private boolean insertMoney = false;
+
+    public boolean isInsertMoney() {
+        return insertMoney;
+    }
+
+    public void setInsertMoney(boolean insertMoney) {
+        this.insertMoney = insertMoney;
+         setChanged();
+        notifyObservers();
+    }
     private int id; 
 
     public boolean isReset() {
