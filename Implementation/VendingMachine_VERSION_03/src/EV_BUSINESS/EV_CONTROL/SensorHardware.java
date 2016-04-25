@@ -32,6 +32,14 @@ public class SensorHardware {
         this.acceleratorAddress = 333;
         this.paymentHardwareAddress=666; /*Not sure here yet*/
     }
+    public void reset(ArrayList<double[]> activeWeightSensors, ArrayList<double []> activeTemperatureSensrs, int acceleratorAddress, int paymentHardwareAddress){
+        this.activeWeightSensors = activeWeightSensors;
+        this.activeTemperatureSensrs = activeTemperatureSensrs;
+        this.acceleratorAddress = 333; /*Same here not sure */
+        this.paymentHardwareAddress=666; /*Not sure here yet*/
+        
+    
+    }
     public String getCurrentWeigt(){
     String tmp ="";
     double [] sensorWeigthData = new double[2];
@@ -56,25 +64,45 @@ public class SensorHardware {
         String content1      = this.getCurrentWeigt();
         String topic1        = "activeWeightSensors";
         simulateErrorInSystem();
-      return topic1+" "+content1;
+        if(content1.equals("")){
+         return "";
+        }
+        else{
+           return topic1+" "+content1;
+        }
     }
       public String pushData2(){
          String content2     = this.getcurrentTemperature();
          String topic2      = "activeTempSensors";
          simulateErrorInSystem();
-      return topic2+" "+content2;
+       if(content2.equals("")){
+         return "";
+        }
+        else{
+           return topic2+" "+content2;
+        }
     }
       public String pushData3(){
         String content3      = ""+this.acceleratorAddress;
         String topic3      = "AccelData";
         simulateErrorInSystem();
-      return topic3+" "+content3;
+      if(content3.equals("")){
+         return "";
+        }
+        else{
+           return topic3+" "+content3;
+        }
     }
       public String pushData4(){
        String content4      =""+this.paymentHardwareAddress;
        String topic4      = "PaymetHardware";
        simulateErrorInSystem(); 
-       return topic4+" "+content4;
+        if(content4.equals("")){
+         return "";
+        }
+        else{
+           return topic4+" "+content4;
+        }
     }
     public void simulateErrorInSystem(){
       // System.out.println("Reporting the error");

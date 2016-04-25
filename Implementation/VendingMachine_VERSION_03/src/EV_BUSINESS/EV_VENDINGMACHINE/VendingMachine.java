@@ -24,7 +24,7 @@ public class VendingMachine extends EVSystem {
         
     }
     public void startInterface(){
-    
+     
     }
     public void testConfigs(int i){
     database.dBopen();

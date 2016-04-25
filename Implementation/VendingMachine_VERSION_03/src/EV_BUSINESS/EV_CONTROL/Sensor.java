@@ -5,6 +5,8 @@
  */
 package EV_BUSINESS.EV_CONTROL;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Anon
@@ -17,6 +19,9 @@ public class Sensor extends Thread {
     public void setSensors(SensorHardware sensHrdw){
         this.sensorHardware = sensHrdw;
         
+    }
+    public void hardReset(ArrayList<double[]> activeWeightSensors, ArrayList<double []> activeTemperatureSensrs, int acceleratorAddress, int paymentHardwareAddress){
+      this.sensorHardware.reset(activeWeightSensors,activeTemperatureSensrs,acceleratorAddress,paymentHardwareAddress);
     }
     public String getData(int i){
         String data="";

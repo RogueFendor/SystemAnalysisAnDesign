@@ -720,41 +720,17 @@ public class Simulator extends javax.swing.JFrame {
 
     private void weigthImballanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_weigthImballanceActionPerformed
         // TODO add your handling code here:
-       if(this.weigthImballance.getText().equals("Weigth")){
-            this.weigthImballance.setText("Reset");
            this.systemObserver.setImballance(true,1);
-          
-       }
-       else{
-          this.systemObserver.setReset(true);
-          this.weigthImballance.setText("Weigth");
-       }
     }//GEN-LAST:event_weigthImballanceActionPerformed
 
     private void shockDetectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shockDetectorActionPerformed
-        // TODO add your handling code here:
-        if(this.shockDetector.getText().equals("Vandalism")){
-             this.shockDetector.setText("Reset");
+ 
           this.systemObserver.setImballance(true,3);
-            
-        }
-          else{
-            this.systemObserver.setReset(true);
-            this.shockDetector.setText("Vandalism");
-        }
     }//GEN-LAST:event_shockDetectorActionPerformed
 
     private void tempImballanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tempImballanceActionPerformed
         // TODO add your handling code here:
-         if(this.tempImballance.getText().equals("Temperature")){
-              this.tempImballance.setText("Reset");
           this.systemObserver.setImballance(true,2);
-            
-        }
-          else{
-            this.systemObserver.setReset(true);
-            this.tempImballance.setText("Temperature");
-        }
     }//GEN-LAST:event_tempImballanceActionPerformed
 
     private void paymentCashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentCashActionPerformed

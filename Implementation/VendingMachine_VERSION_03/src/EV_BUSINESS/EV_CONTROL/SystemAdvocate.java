@@ -42,15 +42,11 @@ public class SystemAdvocate extends EVSystem implements Payment{
     public void simulateTempImballance(){
         
        this.setPreviousVal(this.systemControl.getSimplifier2());
-       String n = "Error In Data";
-       this.systemControl.setSimplifier2(n);
-    }
-    public void resetValueToOrigin(int i){
-       switch(i){
-           case 1:  this.systemControl.setSimplifier1(this.getPreviousVal());break;
-           case 2:  this.systemControl.setSimplifier2(this.getPreviousVal());break;
-           case 3:  this.systemControl.setSimplifier3(this.getPreviousVal());break;
-           case 4:  this.systemControl.setSimplifier4(this.getPreviousVal());break;
+       System.out.println("Settin previous value to "+this.getPreviousVal());
+       if(!this.previousVal.equals("")){
+          String n = createAnError();
+          this.systemControl.setSimplifier2(n);
+          System.out.println("previous value is now "+this.getPreviousVal());
        }
     }
 
@@ -58,6 +54,26 @@ public class SystemAdvocate extends EVSystem implements Payment{
      *
      * @param i
      */
+    public String createAnError(){
+       
+       String n = this.systemControl.getSimplifier2().replaceAll("activeTempSensors", "");
+       n = n.replaceAll(",", " ");
+       String tmp[]=n.split(" ");
+        int len = tmp.length;
+       String returnVal="";
+       tmp[0]="activeTempSensors";
+       tmp [2]="0.00";
+       for(int i=1;i<len;i++){
+           if(i%2==0)
+               returnVal+=tmp[i]+",";
+           else{
+               returnVal+=tmp[i]+" ";
+           }
+         
+       }
+       System.out.println("This is the new Imballance "+returnVal);
+       return returnVal;
+    }
     public void imballance(int i){
        
        switch(i){
@@ -70,18 +86,18 @@ public class SystemAdvocate extends EVSystem implements Payment{
     public void simulateWeightImballance(){
         System.out.println(this.systemControl.getSimplifier1());
           this.setPreviousVal(this.systemControl.getSimplifier1());
-          String n = "Error In Data 1";
+          String n = "Error In Data WeightImballance";
           this.systemControl.setSimplifier1(n);
            System.out.println(this.systemControl.getSimplifier1());
     }
     public void simulateImpact(){
      this.setPreviousVal(this.systemControl.getSimplifier3());
-       String n = "Error In Data 3";
+       String n = "Error In Data Impact Detected";
        this.systemControl.setSimplifier3(n);
     }
     public void simulateMoneyUpdate(){
          this.setPreviousVal(this.systemControl.getSimplifier4());
-         String n = "Error In Data 4";
+         String n = "Error In Data Money Added";
          this.systemControl.setSimplifier4(n);
     }
     public double getCurrentPriceValue() {
@@ -142,12 +158,12 @@ public class SystemAdvocate extends EVSystem implements Payment{
             determineAction(data);
      }
      public  void determineAction(String sampleData){
-        if(this.systemControl.isRunControl()==false) {
+        if(this.systemControl.isRunControl()==false && !sampleData.equals("")) {
             switch(this.systemControl.getAction()){
                 case 1:this.testSync("case 1");
                        this.systemControl.setRunControl(true); 
                        /*reorder()*/break;
-                case 2: this.disableSlot(sampleData);
+                case 2: this.disableSlot(sampleData, 2);
                         this.systemControl.setRunControl(true);
                         break;
                 case 3:this.testSync("case 3");
@@ -167,33 +183,30 @@ public class SystemAdvocate extends EVSystem implements Payment{
         }
         this.systemControl.setRunControl(true);
      }
-     public void testSync(String n){
-        System.out.println(n);
-     }
-     public void disableSlot(String data){
-       String [] faultConfig = new String[8];
+     public void forTemp(String data){
+        String [] faultConfig = new String[8];
        double [] tempMask = this.systemControl.getTemperatureMask();
        data = data.replace("activeTempSensors ","");
        data = data.replace(","," ");  
        String [] sampledTempVals = data.split(" ");
+       
         int len = sampledTempVals.length;
         double [] sampledTemperatureData = new double[len];
        for (int i = 0;i<len;i++){
-            sampledTemperatureData[i]= Double.parseDouble(sampledTempVals[i]);
-            if(i%2==0){
-               if(tempMask[i]!= sampledTemperatureData[i]){
-              
-                    faultConfig[0]="SLOT_CONFIG";
-                    faultConfig[1]=""+i;
-                    faultConfig[2]="FAULTY";
-                    faultConfig[3]="0";
-                    faultConfig[4]="0.0";
-                    faultConfig[5]="0.0";
-                    faultConfig[6]="0.0";
-                    faultConfig[7]="0.0";
+        sampledTemperatureData[i]= Double.parseDouble(sampledTempVals[i]);
+           if(tempMask[i]!= sampledTemperatureData[i]){
+               System.out.println("test: "+tempMask[i]+" "+" "+sampledTemperatureData[i]);
+                faultConfig[1]=sampledTempVals[i-1];
+                faultConfig[0]="SLOT_CONFIG";
+                faultConfig[2]="FAULTY";
+                faultConfig[3]="0";
+                faultConfig[4]="0.0";
+                faultConfig[5]="0.0";
+                faultConfig[6]="0.0";
+                faultConfig[7]="0.0";
                 this.updateConfig(faultConfig);
-               }
-            }
+                 reorder();
+           }
        }
        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
        Date dateobj = new Date();
@@ -215,6 +228,39 @@ public class SystemAdvocate extends EVSystem implements Payment{
         this.database.dBopen();
           database.insertTable(temperatureReport.getReport(), 3);
         this.database.dBclose();
+        this.systemControl.setSimplifier2(this.getPreviousVal());
+       
+        this.sensor.hardReset(activeWeightSensors, activeTemperatureSensrs, acceleratorAddress, paymentHardwareAddress);
+        this.systemControl.setPaymentHardwareMask();
+        this.systemControl.setTemperatureMask();
+        this.systemControl.setWeightMask();
+        this.systemControl.setAccelMask();
+        System.out.println("Setting value after db update "+this.systemControl.getSimplifier2());
+     }
+     public void testSync(String n){
+        System.out.println(n);
+     }
+     public void disableSlot(String data, int identifier){
+         if(data.equals("")){
+             
+         }
+         else{
+            switch(identifier){
+                case 1:forWeightImballance(data);break;
+                case 2:forTemp(data);break;
+                case 3:forImpact(data);break;
+                case 4:forPayment(data);break;
+            }
+         }
+     }
+     public void forWeightImballance(String data){
+          
+     }
+     public void forImpact(String data){
+     
+     }
+     public void forPayment(String data){
+       
      }
     @Override
     public void Dispense(double p) {
@@ -269,6 +315,7 @@ public class SystemAdvocate extends EVSystem implements Payment{
                 locationAndWeigth[0]= location;
                 locationAndWeigth[1]= 2500;
                 this.activeTemperatureSensrs.add(ctr,locationAndTemp);
+                System.out.println("Test reorder "+locationAndTemp[0]+" "+locationAndTemp[1]);
                 this.activeWeightSensors.add(ctr,locationAndWeigth);
                 ctr++;
               }

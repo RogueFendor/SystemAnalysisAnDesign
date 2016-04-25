@@ -50,9 +50,14 @@ public class SystemControl extends Thread {
 
     public void setAccelMask() {
         String data = this.sensor.getData(3);
-        this.setSimplifier3(data);
-        String []tmp = data.split(" ");
-        this.AccelMask = Integer.parseInt(tmp[1]) ;
+         if(data.equals("")){
+              this.setSimplifier3("");
+        }
+        else{
+          this.setSimplifier3(data);
+          String []tmp = data.split(" ");
+          this.AccelMask = Integer.parseInt(tmp[1]) ;
+          }
     }
 
     public synchronized String getSimplifier3() {
@@ -77,9 +82,14 @@ public class SystemControl extends Thread {
 
     public void setPaymentHardwareMask() {
         String data = this.sensor.getData(4);
-        this.setSimplifier4(data);
-        String []tmp = data.split(" ");
-        this.paymentHardwareMask = Integer.parseInt(tmp[1]);
+         if(data.equals("")){
+             this.setSimplifier4("");
+        }
+        else{
+          this.setSimplifier4(data);
+          String []tmp = data.split(" ");
+          this.paymentHardwareMask = Integer.parseInt(tmp[1]);
+        }
     }
 
     public int getAction() {
@@ -92,17 +102,21 @@ public class SystemControl extends Thread {
 
     public void setTemperatureMask() {
         String data = this.sensor.getData(2);
-        this.setSimplifier2(data);
-        data = data.replace("activeTempSensors ","");
-        data = data.replace(","," ");
-        String [] doubleVals = data.split(" ");  
-        int len = doubleVals.length;
-        this.TemperatureMask= new double[len]; 
-        for(int i=0;i<len ;i++){
-            this.TemperatureMask[i] =Double.parseDouble(doubleVals[i]);
+        if(data.equals("")){
+          this.setSimplifier2("");
         }
-        
-          
+        else{
+            System.out.println("Test "+data);
+            this.setSimplifier2(data);
+            data = data.replace("activeTempSensors ","");
+            data = data.replace(","," ");
+            String [] doubleVals = data.split(" ");  
+            int len = doubleVals.length;
+            this.TemperatureMask= new double[len]; 
+            for(int i=0;i<len ;i++){
+                this.TemperatureMask[i] =Double.parseDouble(doubleVals[i]);
+            }
+        } 
     }
 
     public double[] getWeightMask() {
@@ -112,15 +126,19 @@ public class SystemControl extends Thread {
 
     public void setWeightMask() {
         String data = this.sensor.getData(1);
-       
-        this.setSimplifier1(data);
-        data = data.replace("activeWeightSensors ","");
-        data = data.replace(","," ");
-        String [] doubleVals = data.split(" "); 
-        int len = doubleVals.length;
-        this.WeightMask = new double[len];
-        for(int i=0;i<len ;i++){
-            this.WeightMask[i]=Double.parseDouble(doubleVals[i]);
+        if(data.equals("")){
+            this.setSimplifier1("");
+        }
+        else{
+            this.setSimplifier1(data);
+            data = data.replace("activeWeightSensors ","");
+            data = data.replace(","," ");
+            String [] doubleVals = data.split(" "); 
+            int len = doubleVals.length;
+            this.WeightMask = new double[len];
+            for(int i=0;i<len ;i++){
+                this.WeightMask[i]=Double.parseDouble(doubleVals[i]);
+            }
         }
     }
 
@@ -158,9 +176,6 @@ public class SystemControl extends Thread {
     }
     
     public void verify(String data,int ctr){ 
-         System.out.println("test changing simplifier {"+this.getSimplifier1()+"}");
-       this.setRunControl(false);
-      
        switch(ctr){
            case 1: if(!data.equals(this.getSimplifier1())){
                 System.out.println("test Data and strings {"+this.getSimplifier1()+"} {"+data+"}");
@@ -200,7 +215,7 @@ public class SystemControl extends Thread {
         while(true){
             if(this.runControl == false){
               try{
-                    this.systemAdvocate.initAction(data);
+                    this.systemAdvocate.initAction(this.getSimplifier2());
                     Thread.sleep(3000);
                     this.runControl =true;
               }

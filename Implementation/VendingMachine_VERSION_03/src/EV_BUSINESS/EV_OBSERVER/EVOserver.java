@@ -162,10 +162,6 @@ public class EVOserver implements Observer{
            sa.imballance(ov.getId());
 
          }
-         if(ov.isReset()==true){
-            SystemAdvocate sa = (SystemAdvocate) gui.systemAdvocate;
-              sa.resetValueToOrigin(ov.getId());
-         }
       }    
     }
 }

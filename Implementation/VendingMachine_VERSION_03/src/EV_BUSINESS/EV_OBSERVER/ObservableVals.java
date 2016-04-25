@@ -37,11 +37,10 @@ public class ObservableVals extends Observable {
          setChanged();
         notifyObservers();
     }
+
     private int id; 
 
-    public boolean isReset() {
-        return re_set;
-    }
+  
 
     public int getId() {
         return id;
@@ -49,12 +48,6 @@ public class ObservableVals extends Observable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setReset(boolean reset) {
-        this.re_set = reset;
-         setChanged();
-        notifyObservers();
     }
    
     
@@ -72,7 +65,6 @@ public class ObservableVals extends Observable {
          this.simulationListenerMainMenu =false;
          this.getSlotConfig =false;
          this.imballance =false;
-         this.re_set = false;
     }
 
     public boolean isGetSlotConfig() {
